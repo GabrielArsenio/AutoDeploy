@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 public class LocalShell {
 
     private static final Logger log = Logger.getLogger(LocalShell.class.getName());
-    String saida = null;
+    String saida = "Início> ";
 
     public void executeCommand(final String command) throws IOException {
         final ArrayList<String> commands = new ArrayList<String>();
