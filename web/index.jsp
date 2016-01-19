@@ -13,15 +13,15 @@
     </head>
     <body>
     <center>
-        <form>
+        <form id="form" name="form" method="post" action="PuxarServlet">
             <table>
-                <tr>
-                    <td align="right">Nome:</td>
-                    <td align="left"><input type="text" name="nome"></td>
-                </tr>
                 <tr>
                     <td align="right">Endereço Git:</td>
                     <td align="left"><input type="text" name="git"></td>
+                </tr>
+                <tr>
+                    <td align="right">Nome Projeto:</td>
+                    <td align="left"><input type="text" name="nome"></td>
                 </tr>
                 <tr>
                     <td align="right"></td>
