@@ -6,15 +6,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LocalShell {
 
     private static final Logger log = Logger.getLogger(LocalShell.class.getName());
+    String saida = null;
 
     public void executeCommand(final String command) throws IOException {
-        final ArrayList<String> commands = new ArrayList<>();
+        final ArrayList<String> commands = new ArrayList<String>();
         commands.add("/bin/bash");
         commands.add("-c");
         commands.add(command);
@@ -27,10 +27,11 @@ public class LocalShell {
             br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null) {
+                saida += " ; " + line;
                 System.out.println("Retorno do comando = [" + line + "]");
             }
         } catch (IOException ioe) {
-            log.log(Level.SEVERE, "Erro ao executar comando shell{0}", ioe.getMessage());
+            log.severe("Erro ao executar comando shell" + ioe.getMessage());
             throw ioe;
         } finally {
             secureClose(br);
@@ -43,7 +44,11 @@ public class LocalShell {
                 resource.close();
             }
         } catch (IOException ex) {
-            log.log(Level.SEVERE, "Erro = {0}", ex.getMessage());
+            log.severe("Erro = " + ex.getMessage());
         }
+    }
+    
+    public String getSaida(){
+        return saida;
     }
 }
