@@ -14,14 +14,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel
  */
 public class PuxarServlet extends HttpServlet {
-    
+
     private String cdPastaProjeto = "cd /home/projetos/#NOME_PROJETO#";
     private String gitPull = "git pull #REPOSITORIO_GIT#";
     private String gitClone = "git clone #REPOSITORIO_GIT#";
     private String antCleanDist = "ant -f \"/home/projetos/#NOME_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=/home/projetos/#NOME_PROJETO#\" clean dist";
     private String cpPastaWebapps = "cp /home/projetos/#NOME_PROJETO#/dist/#WAR_PROJETO# /opt/tomcat8/webapps/";
     private String war = "";
-    private String pastaProjetos = "/home/projetos/#NOME_PROJETO#";
+    private String pastaProjetos = "/home/projetos/";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,9 +34,9 @@ public class PuxarServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         response.setContentType("text/html;charset=UTF-8");
-        
+
         try (PrintWriter out = response.getWriter()) {
             /* Montando Strings */
             cdPastaProjeto = cdPastaProjeto.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
@@ -45,15 +45,16 @@ public class PuxarServlet extends HttpServlet {
             antCleanDist = antCleanDist.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
             cpPastaWebapps = cpPastaWebapps.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
             pastaProjetos = pastaProjetos.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
-            
+
             LocalShell shell = new LocalShell();
-            shell.executeCommand(cdPastaProjeto);
-            if (!new File(pastaProjetos).exists()){
-                shell.executeCommand(gitClone);
-            }else {
+            if (new File(pastaProjetos + request.getParameter("nome")).exists()) {
+                shell.executeCommand(cdPastaProjeto);
                 shell.executeCommand(gitPull);
-            }            
-            
+            } else {
+                shell.executeCommand("cd " + pastaProjetos);
+                shell.executeCommand(gitClone);
+            }
+
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
