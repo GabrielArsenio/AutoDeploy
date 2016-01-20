@@ -1,6 +1,7 @@
 package com.deploy.sistema.controller;
 
 import com.deploy.sistema.util.LocalShell;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -13,6 +14,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author Gabriel
  */
 public class PuxarServlet extends HttpServlet {
+    
+    private String cdPastaProjeto = "cd /home/projetos/#NOME_PROJETO#";
+    private String gitPull = "git pull #REPOSITORIO_GIT#";
+    private String gitClone = "git clone #REPOSITORIO_GIT#";
+    private String antCleanDist = "ant -f \"/home/projetos/#NOME_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=/home/projetos/#NOME_PROJETO#\" clean dist";
+    private String cpPastaWebapps = "cp /home/projetos/#NOME_PROJETO#/dist/#WAR_PROJETO# /opt/tomcat8/webapps/";
+    private String war = "";
+    private String pastaProjetos = "/home/projetos/#NOME_PROJETO#";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,9 +38,21 @@ public class PuxarServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         
         try (PrintWriter out = response.getWriter()) {
+            /* Montando Strings */
+            cdPastaProjeto = cdPastaProjeto.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
+            gitPull = gitPull.replaceAll("#REPOSITORIO_GIT#", request.getParameter("git"));
+            gitClone = gitClone.replaceAll("#REPOSITORIO_GIT#", request.getParameter("git"));
+            antCleanDist = antCleanDist.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
+            cpPastaWebapps = cpPastaWebapps.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
+            pastaProjetos = pastaProjetos.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
             
             LocalShell shell = new LocalShell();
-            shell.executeCommand(request.getParameter("git"));
+            shell.executeCommand(cdPastaProjeto);
+            if (!new File(pastaProjetos).exists()){
+                shell.executeCommand(gitClone);
+            }else {
+                shell.executeCommand(gitPull);
+            }            
             
             out.println("<!DOCTYPE html>");
             out.println("<html>");
