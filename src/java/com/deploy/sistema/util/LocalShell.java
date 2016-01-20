@@ -11,29 +11,20 @@ import java.util.logging.Logger;
 public class LocalShell {
 
     private static final Logger log = Logger.getLogger(LocalShell.class.getName());
-    String saida = "Início> ";
-
+    String saida = "";
+    
     public void executeCommand(final String command) throws IOException {
         final ArrayList<String> commands = new ArrayList<String>();
-        saida += " ; new ArrayList";
         commands.add("/bin/bash");
-        saida += " ; add bin bash";
         commands.add("-c");
-        saida += " ; add -c";
         commands.add(command);
-        saida += " ; add command";
         BufferedReader br = null;
         try {
             final ProcessBuilder p = new ProcessBuilder(commands);
-            saida += " ; new ProcessBuilder";
             final Process process = p.start();
-            saida += " ; p.start";
             final InputStream is = process.getInputStream();
-            saida += " ; getImputStream";
             final InputStreamReader isr = new InputStreamReader(is);
-            saida += " ; ImputStreamReader";
             br = new BufferedReader(isr);
-            saida += " ; new BufferedReader";
             String line;
             while ((line = br.readLine()) != null) {
                 saida += " ; " + line;
