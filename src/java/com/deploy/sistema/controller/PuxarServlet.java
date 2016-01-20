@@ -31,7 +31,7 @@ public class PuxarServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             
             LocalShell shell = new LocalShell();
-            shell.executeCommand(request.getParameter("nome"));
+            shell.executeCommand(request.getParameter("git"));
             
             out.println("<!DOCTYPE html>");
             out.println("<html>");

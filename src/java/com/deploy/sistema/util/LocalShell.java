@@ -19,7 +19,6 @@ public class LocalShell {
         commands.add("/bin/bash");
         saida += " ; add bin bash";
         commands.add("-c");
-        commands.add("sudo su");
         saida += " ; add -c";
         commands.add(command);
         saida += " ; add command";
