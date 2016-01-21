@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PuxarServlet extends HttpServlet {
 
-    private String stringMestre = "source /etc/bash.bashrc;cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#;chmod 777 /home/projetos/#NOME_PROJETO#;ant -f \"#PASTA_PROJETO#\" -Dtomcat.home=$CATALINA_HOME -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=#PASTA_PROJETO#\" clean dist;cp #PASTA_PROJETO#/dist/*.war /opt/tomcat8/webapps/";
+    private String stringMestre = "source /etc/bash.bashrc;cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#;ant -f \"#PASTA_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=#PASTA_PROJETO#\" clean dist;cp #PASTA_PROJETO#/dist/*.war /opt/tomcat8/webapps/";
     private String pastaProjeto = "/home/projetos/#NOME_PROJETO#";
     private String nome;
     private String git;
@@ -50,21 +50,21 @@ public class PuxarServlet extends HttpServlet {
             }
             
             stringMestre = stringMestre.replaceAll("#PASTA_PROJETO#", pastaProjeto);
+            /* Fim Montagem Strings */
+            
 
             LocalShell shell = new LocalShell();
             shell.executeCommand(stringMestre);
-            shell.executeCommand("echo catalina $CATALINA_HOME;echo java $JAVA_HOME;echo ant $ANT_HOME;echo path $PATH;");
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet PuxarServlet</title>");
+            out.println("<title>Deploy - Resultado</title>");
             out.println("</head>");
             out.println("<body>");
             out.println(request.getParameter("git"));
             out.println(stringMestre);
             out.println(shell.getSaida());
-            out.println("<h1>Servlet PuxarServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
