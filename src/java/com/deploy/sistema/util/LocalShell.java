@@ -27,7 +27,7 @@ public class LocalShell {
             br = new BufferedReader(isr);
             String line;
             while ((line = br.readLine()) != null) {
-                saida += " ; " + line;
+                saida += " <br> " + line;
                 System.out.println("Retorno do comando = [" + line + "]");
             }
         } catch (IOException ioe) {
