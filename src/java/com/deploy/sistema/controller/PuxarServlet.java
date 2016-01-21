@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PuxarServlet extends HttpServlet {
 
-    private String stringMestre = "cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#";
+    private String stringMestre = "cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#;ant -f \"#PASTA_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=#PASTA_PROJETO#\" clean dist;cp #PASTA_PROJETO#/dist/*.war /opt/tomcat8/webapps/";
     private String pastaProjeto = "/home/projetos/#NOME_PROJETO#";
     private String nome;
     private String git;
@@ -39,6 +39,7 @@ public class PuxarServlet extends HttpServlet {
             git = request.getParameter("git");
             nome = request.getParameter("nome");
             stringMestre = stringMestre.replaceAll("#REPOSITORIO_GIT#", git);
+            pastaProjeto = pastaProjeto.replaceAll("#NOME_PROJETO#", nome);
 
             if (new File(pastaProjeto).exists()) {
                 stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", nome);
@@ -47,6 +48,8 @@ public class PuxarServlet extends HttpServlet {
                 stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", "");
                 stringMestre = stringMestre.replaceAll("#COMANDO_GIT#", "clone");
             }
+            
+            stringMestre = stringMestre.replaceAll("#PASTA_PROJETO#", pastaProjeto);
 
             LocalShell shell = new LocalShell();
             shell.executeCommand(stringMestre);
