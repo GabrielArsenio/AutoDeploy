@@ -15,13 +15,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PuxarServlet extends HttpServlet {
 
-    private String cdPastaProjeto = "cd /home/projetos/#NOME_PROJETO#";
-    private String gitPull = "git pull #REPOSITORIO_GIT#";
-    private String gitClone = "git clone #REPOSITORIO_GIT#";
-    private String antCleanDist = "ant -f \"/home/projetos/#NOME_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=/home/projetos/#NOME_PROJETO#\" clean dist";
-    private String cpPastaWebapps = "cp /home/projetos/#NOME_PROJETO#/dist/#WAR_PROJETO# /opt/tomcat8/webapps/";
-    private String war = "";
-    private String pastaProjetos = "/home/projetos/";
+    private String stringMestre = "cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#";
+    private String pastaProjeto = "/home/projetos/#NOME_PROJETO#";
+    private String nome;
+    private String git;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,21 +36,20 @@ public class PuxarServlet extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             /* Montando Strings */
-            cdPastaProjeto = cdPastaProjeto.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
-            gitPull = gitPull.replaceAll("#REPOSITORIO_GIT#", request.getParameter("git"));
-            gitClone = gitClone.replaceAll("#REPOSITORIO_GIT#", request.getParameter("git"));
-            antCleanDist = antCleanDist.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
-            cpPastaWebapps = cpPastaWebapps.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
-            pastaProjetos = pastaProjetos.replaceAll("#NOME_PROJETO#", request.getParameter("nome"));
+            git = request.getParameter("git");
+            nome = request.getParameter("nome");
+            stringMestre = stringMestre.replaceAll("#REPOSITORIO_GIT#", git);
+
+            if (new File(pastaProjeto).exists()) {
+                stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", nome);
+                stringMestre = stringMestre.replaceAll("#COMANDO_GIT#", "pull");
+            } else {
+                stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", "");
+                stringMestre = stringMestre.replaceAll("#COMANDO_GIT#", "clone");
+            }
 
             LocalShell shell = new LocalShell();
-            if (new File(pastaProjetos + request.getParameter("nome")).exists()) {
-                shell.executeCommand(cdPastaProjeto);
-                shell.executeCommand(gitPull);
-            } else {
-                shell.executeCommand("cd " + pastaProjetos);
-                shell.executeCommand(gitClone);
-            }
+            shell.executeCommand(stringMestre);
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
