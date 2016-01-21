@@ -53,6 +53,7 @@ public class PuxarServlet extends HttpServlet {
 
             LocalShell shell = new LocalShell();
             shell.executeCommand(stringMestre);
+            shell.executeCommand("echo catalina $CATALINA_HOME;echo java $JAVA_HOME;echo ant $ANT_HOME;echo path $PATH;");
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
