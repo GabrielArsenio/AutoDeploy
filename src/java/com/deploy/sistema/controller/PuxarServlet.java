@@ -61,6 +61,7 @@ public class PuxarServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println(request.getParameter("git"));
+            out.println(stringMestre);
             out.println(shell.getSaida());
             out.println("<h1>Servlet PuxarServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
