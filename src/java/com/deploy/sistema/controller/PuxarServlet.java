@@ -2,8 +2,10 @@ package com.deploy.sistema.controller;
 
 import com.deploy.sistema.util.LocalShell;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Scanner;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +17,12 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PuxarServlet extends HttpServlet {
 
+    private LocalShell shell;
     private String stringMestre = "source /etc/bash.bashrc;cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#;ant -f \"#PASTA_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=#PASTA_PROJETO#\" clean dist;cp #PASTA_PROJETO#/dist/*.war /opt/tomcat8/webapps/";
     private String pastaProjeto = "/home/projetos/#NOME_PROJETO#";
     private String nome;
     private String git;
+    private String token;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,6 +42,7 @@ public class PuxarServlet extends HttpServlet {
             /* Montando Strings */
             git = request.getParameter("git");
             nome = request.getParameter("nome");
+            token = request.getParameter("token");
             stringMestre = stringMestre.replaceAll("#REPOSITORIO_GIT#", git);
             pastaProjeto = pastaProjeto.replaceAll("#NOME_PROJETO#", nome);
 
@@ -48,13 +53,19 @@ public class PuxarServlet extends HttpServlet {
                 stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", "");
                 stringMestre = stringMestre.replaceAll("#COMANDO_GIT#", "clone");
             }
-            
+
             stringMestre = stringMestre.replaceAll("#PASTA_PROJETO#", pastaProjeto);
             /* Fim Montagem Strings */
-            
 
-            LocalShell shell = new LocalShell();
-            shell.executeCommand(stringMestre);
+            /* Valida Token */
+            Scanner scan = new Scanner(new FileReader("/home/token.txt"));
+            if (token.equals(scan.next())) {
+                shell = new LocalShell();
+                shell.executeCommand(stringMestre);
+                stringMestre = shell.getSaida();
+            } else {
+                stringMestre = "Token Inválido.";
+            }
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -63,8 +74,10 @@ public class PuxarServlet extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println(request.getParameter("git"));
+            out.println("<br>");
+            out.println(request.getParameter("nome"));
+            out.println("<br>");
             out.println(stringMestre);
-            out.println(shell.getSaida());
             out.println("</body>");
             out.println("</html>");
         }

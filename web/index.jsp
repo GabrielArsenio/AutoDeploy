@@ -24,6 +24,10 @@
                     <td align="left"><input type="text" name="nome"></td>
                 </tr>
                 <tr>
+                    <td align="right">Token:</td>
+                    <td align="left"><input type="password" name="token"></td>
+                </tr>
+                <tr>
                     <td align="right"></td>
                     <td align="right"><button type="submit">Aplicar</button> </td>
                 </tr>
