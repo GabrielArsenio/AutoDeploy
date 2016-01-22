@@ -62,7 +62,7 @@ public class PuxarServlet extends HttpServlet {
             if (token.equals(scan.next())) {
                 shell = new LocalShell();
                 shell.executeCommand(stringMestre);
-                stringMestre = shell.getSaida();
+                stringMestre = stringMestre + "<br>" + shell.getSaida();
             } else {
                 stringMestre = "Token Inválido.";
             }
