@@ -9,7 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Deploy Git -> Tomcat - Final</title>
+        <title>Deploy Git -> Tomcat - Token</title>
     </head>
     <body>
     <center>
