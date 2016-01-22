@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PuxarServlet extends HttpServlet {
 
+    private final String stringMestre = "source /etc/bash.bashrc;cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#;ant -f \"#PASTA_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=#PASTA_PROJETO#\" clean dist;cp #PASTA_PROJETO#/dist/*.war /opt/tomcat8/webapps/";
+    private final String pastaProjeto = "/home/projetos/#NOME_PROJETO#";
+    private String stringMestreImpl;
+    private String pastaProjetoImpl;
     private LocalShell shell;
-    private String stringMestre = "source /etc/bash.bashrc;cd /home/projetos/#NOME_PROJETO#;git #COMANDO_GIT# #REPOSITORIO_GIT#;ant -f \"#PASTA_PROJETO#\" -Dj2ee.server.home=$CATALINA_HOME -Dnb.internal.action.name=rebuild -DforceRedeploy=false \"-Dbrowser.context=#PASTA_PROJETO#\" clean dist;cp #PASTA_PROJETO#/dist/*.war /opt/tomcat8/webapps/";
-    private String pastaProjeto = "/home/projetos/#NOME_PROJETO#";
     private String nome;
     private String git;
     private String token;
@@ -43,29 +45,29 @@ public class PuxarServlet extends HttpServlet {
             git = request.getParameter("git");
             nome = request.getParameter("nome");
             token = request.getParameter("token");
-            stringMestre = stringMestre.replaceAll("#REPOSITORIO_GIT#", git);
-            pastaProjeto = pastaProjeto.replaceAll("#NOME_PROJETO#", nome);
+            stringMestreImpl = stringMestre.replaceAll("#REPOSITORIO_GIT#", git);
+            pastaProjetoImpl = pastaProjeto.replaceAll("#NOME_PROJETO#", nome);
 
-            if (new File(pastaProjeto).exists()) {
-                stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", nome);
-                stringMestre = stringMestre.replaceAll("#COMANDO_GIT#", "pull");
+            if (new File(pastaProjetoImpl).exists()) {
+                stringMestreImpl = stringMestreImpl.replaceAll("#NOME_PROJETO#", nome);
+                stringMestreImpl = stringMestreImpl.replaceAll("#COMANDO_GIT#", "pull");
             } else {
-                stringMestre = stringMestre.replaceAll("#NOME_PROJETO#", "");
-                stringMestre = stringMestre.replaceAll("#COMANDO_GIT#", "clone");
+                stringMestreImpl = stringMestreImpl.replaceAll("#NOME_PROJETO#", "");
+                stringMestreImpl = stringMestreImpl.replaceAll("#COMANDO_GIT#", "clone");
             }
 
-            stringMestre = stringMestre.replaceAll("#PASTA_PROJETO#", pastaProjeto);
+            stringMestreImpl = stringMestreImpl.replaceAll("#PASTA_PROJETO#", pastaProjetoImpl);
             /* Fim Montagem Strings */
 
             /* Valida Token */
-            Scanner scan = new Scanner(new FileReader("/home/token.txt"));
-            if (token.equals(scan.next())) {
-                shell = new LocalShell();
-                shell.executeCommand(stringMestre);
-                stringMestre = stringMestre + "<br>" + shell.getSaida();
-            } else {
-                stringMestre = "Token Inválido.";
-            }
+//            Scanner scan = new Scanner(new FileReader("/home/token.txt"));
+//            if (token.equals(scan.next())) {
+//                shell = new LocalShell();
+//                shell.executeCommand(stringMestreImpl);
+//                stringMestreImpl = stringMestreImpl + "<br>" + shell.getSaida();
+//            } else {
+//                stringMestreImpl = "Token Inválido.";
+//            }
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
@@ -77,7 +79,7 @@ public class PuxarServlet extends HttpServlet {
             out.println("<br>");
             out.println(request.getParameter("nome"));
             out.println("<br>");
-            out.println(stringMestre);
+            out.println(stringMestreImpl);
             out.println("</body>");
             out.println("</html>");
         }
