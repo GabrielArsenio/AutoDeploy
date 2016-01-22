@@ -18,11 +18,7 @@
                 <tr>
                     <td align="right">Endereço Git:</td>
                     <td align="left"><input type="text" name="git"></td>
-                </tr>
-                <tr>
-                    <td align="right">Nome Projeto:</td>
-                    <td align="left"><input type="text" name="nome"></td>
-                </tr>
+                </tr>           
                 <tr>
                     <td align="right">Token:</td>
                     <td align="left"><input type="password" name="token"></td>

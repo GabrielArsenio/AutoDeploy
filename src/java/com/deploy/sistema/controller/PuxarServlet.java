@@ -43,8 +43,10 @@ public class PuxarServlet extends HttpServlet {
         try (PrintWriter out = response.getWriter()) {
             /* Montando Strings */
             git = request.getParameter("git");
-            nome = request.getParameter("nome");
-            token = request.getParameter("token");
+            token = request.getParameter("token");            
+            String gitArray[] = git.split("/");        
+            nome = gitArray[gitArray.length - 1].replaceAll(".git", "");            
+            
             stringMestreImpl = stringMestre.replaceAll("#REPOSITORIO_GIT#", git);
             pastaProjetoImpl = pastaProjeto.replaceAll("#NOME_PROJETO#", nome);
 
@@ -60,14 +62,14 @@ public class PuxarServlet extends HttpServlet {
             /* Fim Montagem Strings */
 
             /* Valida Token */
-//            Scanner scan = new Scanner(new FileReader("/home/token.txt"));
-//            if (token.equals(scan.next())) {
-//                shell = new LocalShell();
-//                shell.executeCommand(stringMestreImpl);
-//                stringMestreImpl = stringMestreImpl + "<br>" + shell.getSaida();
-//            } else {
-//                stringMestreImpl = "Token Inválido.";
-//            }
+            Scanner scan = new Scanner(new FileReader("/home/token.txt"));
+            if (token.equals(scan.next())) {
+                shell = new LocalShell();
+                shell.executeCommand(stringMestreImpl);
+                stringMestreImpl = stringMestreImpl + "<br>" + shell.getSaida();
+            } else {
+                stringMestreImpl = "Token Inválido.";
+            }
 
             out.println("<!DOCTYPE html>");
             out.println("<html>");
