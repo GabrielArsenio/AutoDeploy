@@ -1,5 +1,5 @@
 # AutoDeploy
-# Realiza clone/pull de uma aplicação Java WEB a partir do endereço de um repositório git e constroi o .war para jogar no servidor de aplição.
+# Realiza clone/pull de uma aplicação Java WEB a partir do endereço de um repositório git e constroi o .war para jogar no servidor de aplicação.
 # 
 # Requisitos:
 # JDK (Recomendado 8 ou superior)
